@@ -1,11 +1,19 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { CompressOptions } from '../main/ffmpeg'
+import { CompressOptions } from '../renderer/src/types'
 
 // Custom APIs for renderer
 const api = {
   compress: async (options: CompressOptions) => {
     await ipcRenderer.invoke('compress', options)
+  },
+  selectDirectory: () => {
+    return ipcRenderer.invoke('selectDirectory')
+  },
+  progressNotice: (callback: (progress: number) => void) => {
+    ipcRenderer.on('progressNotice', (_event, progress: number) => {
+      callback(progress)
+    })
   }
 }
 

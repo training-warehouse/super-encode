@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { CloseOne } from '@icon-park/vue-next'
 import { VideoType } from '@renderer/types'
 import useVideo from '../composables/useVideo'
 
 const { video, index } = defineProps<{ video: VideoType; index: number }>()
-const { removeFile } = useVideo()
+const { removeFile, getVideoBgColor } = useVideo()
 </script>
 
 <template>
-  <section class="video" :style="`--process:${video.progress}%`">
+  <section class="video" :style="`--process:${video.progress}%;--bgColor:${getVideoBgColor(video)}`">
     <div class="title z-10">{{ video.name }}</div>
     <div class="icon" @click="removeFile(index)">
       <close-one theme="outline" size="12" />
@@ -24,8 +23,9 @@ const { removeFile } = useVideo()
 
   &::before {
     content: '';
-    @apply bg-yellow-300 absolute top-0 bottom-0 left-0 right-0 z-0 rounded-lg;
+    @apply absolute top-0 bottom-0 left-0 right-0 z-0 rounded-lg;
     width: var(--process);
+    background-color: var(--bgColor);
   }
 
   .title {

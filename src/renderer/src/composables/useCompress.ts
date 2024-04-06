@@ -1,17 +1,32 @@
+import {ref} from 'vue'
+
 import useConfigStore from '../store/useConfigStore'
+import {VideoState, VideoType} from '../types'
 
 export default () => {
   const { config } = useConfigStore()
+  const video = ref<VideoType>()
+
   const getCompressFile = () => {
-    return config.files[0]
+    video.value = config.files.find((_video) => _video.state === VideoState.READY)
+    if (video.value) video.value.state = VideoState.COMPRESS
+  }
+
+  const progressNotice = () => {
+    window.api.progressNotice((progress) => {
+      video.value!.progress = progress
+    })
   }
 
   const compress = () => {
-    const file = getCompressFile()
+    progressNotice()
+
+    getCompressFile()
     window.api.compress({
-      file: { ...file },
+      file: { ...video.value! },
       fps: Number(config.frame),
-      size: config.size
+      size: config.size,
+      saveDirectory: config.videoSaveDirectory
     })
   }
 
