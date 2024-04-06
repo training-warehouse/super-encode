@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { CloseOne } from '@icon-park/vue-next'
 
 import useConfigStore from '@renderer/store/useConfigStore'
-import useVideo from '@renderer/composables/useVideo'
+import useFps from '@renderer/composables/useFps'
 import { DataType } from '@renderer/types'
 
 interface Prop {
@@ -16,7 +16,7 @@ interface Prop {
 const props = defineProps<Prop>()
 
 const { config } = useConfigStore()
-const { add, newValue, remove } = useVideo()
+const { add, newValue, remove } = useFps()
 
 const list = computed(() => {
   return props.type === 'size' ? config.sizes : config.frames

@@ -2,15 +2,16 @@
 import { ref } from 'vue'
 import { CloseOne } from '@icon-park/vue-next'
 import { VideoType } from '@renderer/types'
+import useVideo from '../composables/useVideo'
 
-const { video } = defineProps<{ video: VideoType }>()
-const process = ref(60)
+const { video, index } = defineProps<{ video: VideoType; index: number }>()
+const { removeFile } = useVideo()
 </script>
 
 <template>
-  <section class="video" :style="`--process:${process}%`">
-    <div class="title z-10">{{ video.title }}</div>
-    <div class="icon">
+  <section class="video" :style="`--process:${video.progress}%`">
+    <div class="title z-10">{{ video.name }}</div>
+    <div class="icon" @click="removeFile(index)">
       <close-one theme="outline" size="12" />
     </div>
   </section>
@@ -33,7 +34,7 @@ const process = ref(60)
 
   .icon {
     @apply text-slate-500 opacity-50 cursor-pointer duration-300
-    hover:text-yellow-500 hover:opacity-90 hover:scale-125;
+    hover:text-yellow-500 hover:opacity-100 hover:scale-150;
   }
 }
 </style>
