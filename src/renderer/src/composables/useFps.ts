@@ -6,11 +6,28 @@ import { DataType } from '@renderer/types'
 export default () => {
   const newValue = ref('')
   const { config } = useConfigStore()
+  const addValidate = (type: DataType) => {
+    if (!newValue.value.trim().length) {
+      ElMessage({ message: '请先设置值', type: 'error' })
+      return false
+    }
+
+    let message = ''
+    switch (type) {
+      case 'size':
+        if (!/^d+x\d+$/.test(newValue.value)) message = '分辨率尺寸错误'
+        break
+
+      case 'frame':
+        if (!/^\d+$/.test(newValue.value)) message = '帧数错误'
+        break
+    }
+    if (message) ElMessage.error({ grouping: true, message })
+    return message === ''
+  }
 
   const add = (type: DataType) => {
-    if (!newValue.value.trim().length) {
-      return ElMessage({ message: '请先设置值', type: 'error' })
-    }
+    if (!addValidate(type)) return
 
     if (type === 'size') {
       config.sizes.push(newValue.value)
@@ -22,7 +39,7 @@ export default () => {
   }
 
   const remove = async (type: DataType, index: number) => {
-    await ElMessageBox.confirm('确定要删除吗？')
+    // await ElMessageBox.confirm('确定要删除吗？')
     if (type === 'size') {
       config.sizes.splice(index, 1)
     } else {
